@@ -27,7 +27,7 @@ public class SessionInfoServlet extends HttpServlet {
 
     @Override
     public void init() throws ServletException {
-        emf = Persistence.createEntityManagerFactory("com.mycompany_CriptoIIP_war_1.0-SNAPSHOTPU");
+        emf = Persistence.createEntityManagerFactory("com.mycompany_CriptoPract_war_1.0-SNAPSHOTPU");
     }
     
     @Override
