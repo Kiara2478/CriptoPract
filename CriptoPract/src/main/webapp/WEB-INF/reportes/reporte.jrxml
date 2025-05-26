@@ -1,10 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="28b212c7-5d77-4218-bbef-9b497d86a986">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="e707eabf-a7fb-4d94-8a1f-af219f682e1d">
 	<property name="ireport.zoom" value="1.0"/>
 	<property name="ireport.x" value="0"/>
 	<property name="ireport.y" value="0"/>
-	<queryString language="SQL">
-		<![CDATA[select* from cliente]]>
+	<queryString>
+		<![CDATA[SELECT * FROM cliente]]>
 	</queryString>
 	<field name="codiClie" class="java.lang.Integer">
 		<fieldDescription><![CDATA[]]></fieldDescription>
@@ -30,23 +30,23 @@
 	<pageHeader>
 		<band height="35" splitType="Stretch">
 			<textField>
-				<reportElement x="11" y="0" width="100" height="20" uuid="1613add4-1ebe-44e3-b457-97d7a3a24821"/>
+				<reportElement x="0" y="0" width="100" height="20" uuid="19abb43c-9dc5-427d-a5ad-41da8b01653f"/>
 				<textFieldExpression><![CDATA[$F{codiClie}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="87" y="0" width="100" height="20" uuid="28715165-cba0-4f7d-bd3b-e3ddf91bd773"/>
+				<reportElement x="74" y="0" width="100" height="20" uuid="dd76c382-ce59-438b-99f7-148f6a78c6d9"/>
 				<textFieldExpression><![CDATA[$F{ndniClie}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="165" y="0" width="100" height="20" uuid="ac154a19-3906-44d3-bc61-6617b45a0d71"/>
+				<reportElement x="174" y="0" width="100" height="20" uuid="2de520eb-4ba1-4292-9388-c49867461c5c"/>
 				<textFieldExpression><![CDATA[$F{nombClie}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="333" y="0" width="100" height="20" uuid="0f35b66e-735e-40b4-bb95-21e88f154159"/>
+				<reportElement x="358" y="0" width="100" height="20" uuid="2991f39c-6f8a-4c81-9b45-9cfcd8e999ac"/>
 				<textFieldExpression><![CDATA[$F{celuClie}]]></textFieldExpression>
 			</textField>
 			<textField>
-				<reportElement x="414" y="0" width="100" height="20" uuid="bf82117a-0417-4180-8b2d-f86993364c85"/>
+				<reportElement x="455" y="0" width="100" height="20" uuid="e1b758dd-825f-461e-9b17-f118378f2600"/>
 				<textFieldExpression><![CDATA[$F{direClie}]]></textFieldExpression>
 			</textField>
 		</band>
