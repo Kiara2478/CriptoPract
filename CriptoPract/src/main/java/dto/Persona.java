@@ -33,6 +33,8 @@ import javax.validation.constraints.Size;
     @NamedQuery(name = "Persona.findByFechaNaciPers", query = "SELECT p FROM Persona p WHERE p.fechaNaciPers = :fechaNaciPers"),
     @NamedQuery(name = "Persona.findByPesoPers", query = "SELECT p FROM Persona p WHERE p.pesoPers = :pesoPers"),
     @NamedQuery(name = "Persona.findByLogiPers", query = "SELECT p FROM Persona p WHERE p.logiPers = :logiPers"),
+    // QUERIES DE VALIDACIÓN CORREGIDAS
+    @NamedQuery(name = "Persona.validar", query = "SELECT p FROM Persona p WHERE p.logiPers = :logiPers AND p.passPers = :passPers"),
     @NamedQuery(name = "Persona.findByPassPers", query = "SELECT p FROM Persona p WHERE p.passPers = :passPers")})
 public class Persona implements Serializable {
 
@@ -148,5 +150,5 @@ public class Persona implements Serializable {
     public String toString() {
         return "dto.Persona[ codiPers=" + codiPers + " ]";
     }
-    
+
 }

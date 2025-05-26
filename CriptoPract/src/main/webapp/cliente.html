@@ -125,7 +125,7 @@
                                 </a>
                                 <ul class="nav nav-treeview">
                                     <li class="nav-item">
-                                        <a href="persona.html" class="nav-link active">
+                                        <a href="persona.html" class="nav-link">
                                             <i class="nav-icon bi bi-circle"></i>
                                             <p>Listar personas</p>
                                         </a>
@@ -137,7 +137,7 @@
                                         </a>
                                     </li>
                                     <li class="nav-item">
-                                        <a href="cliente.html" class="nav-link">
+                                        <a href="cliente.html" class="nav-link active">
                                             <i class="nav-icon bi bi-circle"></i>
                                             <p>Crud clientes</p>
                                         </a>
@@ -154,18 +154,26 @@
                 <div class="card shadow">
                     <!-- CABECERA DE LA TARJETA -->
                     <div class="card-header d-flex justify-content-between align-items-center text-black">
-                        <h3 class="mb-0"><i class="bi bi-people me-2"></i>Gestión de Personas</h3>
+                        <h3 class="mb-0"><i class="bi bi-people me-2"></i>Listado de Clientes</h3>
                         <div>
-                            <button class="btn btn-success text-light btn-sm" onclick="loadPersonas()">
+                            <button class="btn btn-success text-light btn-sm" onclick="loadClientes()">
                                 <i class="bi bi-arrow-clockwise"></i> Actualizar
                             </button>
-                            <span class="badge bg-warning text-dark ms-2" id="totalPersonas">0</span>
+                            <span class="badge bg-warning text-dark ms-2" id="totalClientes">0</span>
                         </div>
                     </div>
 
                     <div class="card-body">
                         <!-- ALERTAS -->
                         <div id="alertContainer"></div>
+
+                        <!-- ESTADO DE CARGA -->
+                        <div id="loadingState" class="text-center p-4" style="display: none;">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                            <p class="mt-2">Cargando clientes...</p>
+                        </div>
 
                         <!-- BUSCADOR -->
                         <div class="row mb-3">
@@ -174,7 +182,7 @@
                                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                                     <input type="text" class="form-control" id="searchInput" 
                                            placeholder="Buscar por nombre, DNI o usuario..." 
-                                           onkeyup="filterPersonas()">
+                                           onkeyup="filterClientes()">
                                 </div>
                             </div>
                         </div>
@@ -187,17 +195,13 @@
                                         <th>ID</th>
                                         <th>DNI</th>
                                         <th>Nombres</th>
-                                        <th>Fecha Nacimiento</th>
-                                        <th>Edad</th>
-                                        <th>Peso (kg)</th>
-                                        <th>Usuario</th>
-                                        <th>Contraseña</th>
-
+                                        <th>Celular</th>
+                                        <th>Direccion</th>
                                     </tr>
                                 </thead>
-                                <tbody id="personasTableBody">
+                                <tbody id="clientesTableBody">
                                     <tr>
-                                                                                    <td colspan="8" class="text-center">
+                                        <td colspan="5" class="text-center">
                                             <div class="spinner-border text-primary" role="status">
                                                 <span class="visually-hidden">Cargando...</span>
                                             </div>
@@ -257,8 +261,6 @@
             </div>
         </div>
 
-
-
         <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
         <!-- SCRIPTS -->
@@ -266,19 +268,21 @@
 
         <script>
             // Variables globales
-            let personas = [];
-            let personasOriginal = [];
+            let clientes = [];
+            let clientesOriginal = [];
             let currentUserLogin = '';
 
             // Inicialización al cargar la página
             $(document).ready(function () {
+                console.log("=== INICIANDO APLICACIÓN ===");
                 verificarSesion();
-                loadPersonas();
+                loadClientes();
                 configurarEventos();
             });
 
             // Verificar sesión activa - compatible con tu sistema de login
             function verificarSesion() {
+                console.log("Verificando sesión...");
                 $.ajax({
                     url: "sessioninfoservlet",
                     type: "GET",
@@ -293,7 +297,7 @@
                             // Usar los datos de tu sesión
                             $("#userName").text(data.usuarioNombre || data.nombUsua || "Usuario");
                             currentUserLogin = data.usuarioLogin; // Guardar el login del usuario actual
-                            
+
                             // Si tienes estos campos en sessioninfoservlet, úsalos; sino, oculta
                             if (data.nombRol)
                                 $("#nombRol").text(data.nombRol);
@@ -353,164 +357,102 @@
                     if (!logiUsua || !passUsua || !newpass) {
                         showAlert("Todos los campos son obligatorios", 'danger');
                         return;
-                    }
-
-                    if (newpass.length < 4) {
-                        showAlert("La nueva contraseña debe tener al menos 4 caracteres", 'danger');
-                        return;
-                    }
+                    }                    // Encriptar contraseñas con MD5
+                    const passUsuaHash = CryptoJS.MD5(passUsua).toString();
+                    const newpassHash = CryptoJS.MD5(newpass).toString();
 
                     $.ajax({
-                        type: "POST",
                         url: "cambiarcontrasena",
-                        data: {
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify({
                             logiUsua: logiUsua,
-                            passUsua: passUsua,
-                            newpass: newpass
-                        },
-                        dataType: "json",
+                            passUsua: passUsuaHash,
+                            newpass: newpassHash
+                        }),
                         success: function (response) {
-                            console.log("Cambiar contraseña response:", response);
-                            if (response.resultado === "ok") {
-                                showAlert(response.mensaje, 'success');
-                                $("#cambiarClaveModal").modal('hide');
+                            if (response.success) {
+                                showAlert("Contraseña cambiada correctamente", 'success');
+                                $('#cambiarClaveModal').modal('hide');
                                 $("#formCambiarClave")[0].reset();
-                                setTimeout(() => window.location.href = "index.html", 2000);
                             } else {
-                                showAlert(response.mensaje, 'danger');
+                                showAlert(response.message || "No se pudo cambiar la contraseña", 'danger');
                             }
                         },
-                        error: function (xhr, status, error) {
-                            console.error("Error al cambiar contraseña:", error);
-                            showAlert("Error al comunicarse con el servidor.", 'danger');
+                        error: function () {
+                            showAlert("Error al procesar la solicitud", 'danger');
                         }
                     });
                 });
-
-
             }
 
-            // Cargar todas las personas
-            function loadPersonas() {
+            // Mostrar alertas en pantalla
+            function showAlert(message, type = 'info') {
+                const alertHTML = `
+                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
+                        ${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                    </div>`;
+                $("#alertContainer").html(alertHTML);
+                setTimeout(() => {
+                    $(".alert").alert('close');
+                }, 4000);
+            }
+
+            // Cargar clientes desde el backend
+            function loadClientes() {
+                $("#loadingState").show();
+                $("#clientesTableBody").html(""); // limpiar tabla
+
                 $.ajax({
-                    url: "persona",
-                    type: "GET",
+                    url: "clienteservlet",
+                    method: "GET",
                     dataType: "json",
-                    success: function (response) {
-                        if (response.data) {
-                            personas = response.data;
-                            personasOriginal = [...personas];
-                            renderPersonasTable();
-                            $("#totalPersonas").text(personas.length);
-                        }
+                    success: function (data) {
+                        clientes = data;
+                        clientesOriginal = [...clientes]; // copia para filtrar
+                        renderClientes(data);
+                        $("#totalClientes").text(data.length);
+                        $("#loadingState").hide();
                     },
                     error: function (xhr, status, error) {
-                        showAlert("Error al cargar personas: " + error, 'danger');
+                        console.log("Error cargando clientes:", error);
+                        showAlert("Error al cargar clientes", "danger");
+                        $("#loadingState").hide();
                     }
                 });
             }
 
-            // Renderizar tabla de personas
-            function renderPersonasTable() {
-                const tbody = $("#personasTableBody");
-                tbody.empty();
-
-                if (personas.length === 0) {
-                    tbody.append(`
-                        <tr>
-                            <td colspan="8" class="text-center text-muted">
-                                <i class="bi bi-inbox"></i> No hay personas registradas
-                            </td>
-                        </tr>
-                    `);
-                    return;
-                }
-
-                personas.forEach(persona => {
-                    const edad = calcularEdad(persona.fechaNaciPers);
-                    const peso = persona.pesoPers ? persona.pesoPers + ' kg' : 'N/A';
-                    
-                    tbody.append(`
-                        <tr>
-                            <td class="text-center">${persona.codiPers}</td>
-                            <td>${persona.ndniPers}</td>
-                            <td>${persona.nombPers}</td>
-                            <td class="text-center">${formatearFecha(persona.fechaNaciPers)}</td>
-                            <td class="text-center">${edad} años</td>
-                            <td class="text-center">${peso}</td>
-                            <td>${persona.logiPers}</td>
-                            <td>
-                                <span class="badge bg-secondary">
-                                    <i class="bi bi-shield-lock"></i> MD5 Hash
-                                </span>
-                                <br>
-                                <small class="text-muted font-monospace">${persona.passPers ? persona.passPers.substring(0, 12) + '...' : 'N/A'}</small>
-                            </td>
-                        </tr>
-                    `);
-                });
-            }
-
-
-
-            // Filtrar personas en tiempo real
-            function filterPersonas() {
-                const searchTerm = $("#searchInput").val().toLowerCase();
-
-                if (searchTerm === '') {
-                    personas = [...personasOriginal];
+            // Renderizar tabla de clientes
+            function renderClientes(lista) {
+                let html = "";
+                if (lista.length === 0) {
+                    html = `<tr><td colspan="5" class="text-center">No se encontraron resultados</td></tr>`;
                 } else {
-                    personas = personasOriginal.filter(persona =>
-                        persona.nombPers.toLowerCase().includes(searchTerm) ||
-                        persona.ndniPers.includes(searchTerm) ||
-                        persona.logiPers.toLowerCase().includes(searchTerm)
-                    );
+                    lista.forEach(clientes => {
+                        html += `
+                            <tr>
+                                <td class="text-center">${clientes.codiClie}</td>
+                                <td class="text-center">${clientes.ndniClie}</td>
+                                <td>${clientes.nombClie}</td>
+                                <td>${clientes.celuClie}</td>
+                                <td>${clientes.direClie}</td>
+                            </tr>`;
+                    });
                 }
-
-                renderPersonasTable();
-                $("#totalPersonas").text(personas.length);
+                $("#clientesTableBody").html(html);
             }
 
-            // Calcular edad
-            function calcularEdad(fechaNacimiento) {
-                if (!fechaNacimiento) return 'N/A';
-                
-                const hoy = new Date();
-                const nacimiento = new Date(fechaNacimiento);
-                let edad = hoy.getFullYear() - nacimiento.getFullYear();
-                const mes = hoy.getMonth() - nacimiento.getMonth();
-
-                if (mes < 0 || (mes === 0 && hoy.getDate() < nacimiento.getDate())) {
-                    edad--;
-                }
-
-                return edad;
-            }
-
-            // Formatear fecha
-            function formatearFecha(fecha) {
-                if (!fecha) return 'N/A';
-                
-                const date = new Date(fecha);
-                return date.toLocaleDateString('es-ES');
-            }
-
-            // Mostrar alertas
-            function showAlert(message, type) {
-                const alertHtml = `
-                    <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                        <i class="bi bi-${type === 'success' ? 'check-circle' : type === 'danger' ? 'exclamation-triangle' : 'info-circle'}"></i>
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    `;
-
-                $("#alertContainer").html(alertHtml);
-
-                // Auto-ocultar después de 5 segundos
-                setTimeout(() => {
-                    $(".alert").alert('close');
-                }, 5000);
+            // Filtro de clientes por nombre, DNI o usuario
+            function filterClientes() {
+                const term = $("#searchInput").val().toLowerCase();
+                const filtered = clientesOriginal.filter(c =>
+                    (c.dni && c.dni.toLowerCase().includes(term)) ||
+                    (c.nombres && c.nombres.toLowerCase().includes(term)) ||
+                    (c.usuario && c.usuario.toLowerCase().includes(term))
+                );
+                renderClientes(filtered);
+                $("#totalClientes").text(filtered.length);
             }
         </script>
     </body>

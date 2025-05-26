@@ -133,5 +133,24 @@ public class PersonaJpaController implements Serializable {
             em.close();
         }
     }
-    
+
+    // METODO VALIDAR
+    public Persona validarPersona(String logi, String pass) {
+        EntityManager em = getEntityManager();
+        try {
+            Query q = em.createNamedQuery("Persona.validar");
+            q.setParameter("logiPers", logi);
+            q.setParameter("passPers", pass);
+
+            List<Persona> lista = q.getResultList();
+
+            if (lista == null || lista.isEmpty()) {
+                return null;
+            } else {
+                return lista.get(0);
+            }
+        } finally {
+            em.close();
+        }
+    }
 }
