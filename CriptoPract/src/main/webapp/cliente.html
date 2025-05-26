@@ -63,7 +63,7 @@
             <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
                 <div class="container-fluid">
                     <a class="navbar-brand" href="#">
-                        <i class="bi bi-people-fill me-2"></i>Gestión de Personas
+                        <i class="bi bi-people-fill me-2"></i>Gestión de Clientes
                     </a>
 
                     <!-- INFORMACIÓN DE USUARIO -->
@@ -154,8 +154,11 @@
                 <div class="card shadow">
                     <!-- CABECERA DE LA TARJETA -->
                     <div class="card-header d-flex justify-content-between align-items-center text-black">
-                        <h3 class="mb-0"><i class="bi bi-people me-2"></i>Listado de Clientes</h3>
+                        <h3 class="mb-0"><i class="bi bi-people me-2"></i>Gestión de Clientes</h3>
                         <div>
+                            <button class="btn btn-primary btn-sm me-2" onclick="openNewClienteModal()">
+                                <i class="bi bi-plus-circle"></i> Nuevo Cliente
+                            </button>
                             <button class="btn btn-success text-light btn-sm" onclick="loadClientes()">
                                 <i class="bi bi-arrow-clockwise"></i> Actualizar
                             </button>
@@ -181,13 +184,13 @@
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="bi bi-search"></i></span>
                                     <input type="text" class="form-control" id="searchInput" 
-                                           placeholder="Buscar por nombre, DNI o usuario..." 
+                                           placeholder="Buscar por nombre, DNI..." 
                                            onkeyup="filterClientes()">
                                 </div>
                             </div>
                         </div>
 
-                        <!-- TABLA DE PERSONAS -->
+                        <!-- TABLA DE CLIENTES -->
                         <div class="table-responsive">
                             <table class="table table-striped table-hover">
                                 <thead class="table-dark text-center">
@@ -196,12 +199,13 @@
                                         <th>DNI</th>
                                         <th>Nombres</th>
                                         <th>Celular</th>
-                                        <th>Direccion</th>
+                                        <th>Dirección</th>
+                                        <th>Acciones</th>
                                     </tr>
                                 </thead>
                                 <tbody id="clientesTableBody">
                                     <tr>
-                                        <td colspan="5" class="text-center">
+                                        <td colspan="6" class="text-center">
                                             <div class="spinner-border text-primary" role="status">
                                                 <span class="visually-hidden">Cargando...</span>
                                             </div>
@@ -261,6 +265,87 @@
             </div>
         </div>
 
+        <!-- MODAL PARA CREAR/EDITAR CLIENTE -->
+        <div class="modal fade" id="clienteModal" tabindex="-1">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content">
+                    <div class="modal-header bg-primary text-white">
+                        <h5 class="modal-title" id="clienteModalTitle">Nuevo Cliente</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form id="formCliente">
+                            <input type="hidden" id="clienteId" name="codiClie">
+                            
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="ndniClie" class="form-label">DNI *</label>
+                                        <input type="text" class="form-control" id="ndniClie" name="ndniClie" 
+                                               required maxlength="8" pattern="[0-9]{8}">
+                                        <div class="form-text">Ingrese 8 dígitos</div>
+                                    </div>
+                                </div>
+                                <div class="col-md-6">
+                                    <div class="mb-3">
+                                        <label for="celuClie" class="form-label">Celular</label>
+                                        <input type="text" class="form-control" id="celuClie" name="celuClie" 
+                                               maxlength="9" pattern="[0-9]{9}">
+                                        <div class="form-text">Ingrese 9 dígitos (opcional)</div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="nombClie" class="form-label">Nombres Completos *</label>
+                                <input type="text" class="form-control" id="nombClie" name="nombClie" 
+                                       required maxlength="100">
+                            </div>
+                            
+                            <div class="mb-3">
+                                <label for="direClie" class="form-label">Dirección</label>
+                                <textarea class="form-control" id="direClie" name="direClie" 
+                                          rows="3" maxlength="200"></textarea>
+                            </div>
+                        </form>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="submit" form="formCliente" class="btn btn-primary" id="btnSaveCliente">
+                            <i class="bi bi-save"></i> Guardar Cliente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MODAL DE CONFIRMACIÓN PARA ELIMINAR -->
+        <div class="modal fade" id="deleteModal" tabindex="-1">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header bg-danger text-white">
+                        <h5 class="modal-title">Confirmar Eliminación</h5>
+                        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                    </div>
+                    <div class="modal-body">
+                        <p class="mb-3"><i class="bi bi-exclamation-triangle text-warning fs-1"></i></p>
+                        <p><strong>¿Está seguro que desea eliminar este cliente?</strong></p>
+                        <p class="text-muted">Esta acción no se puede deshacer.</p>
+                        <div class="alert alert-info">
+                            <strong>Cliente a eliminar:</strong><br>
+                            <span id="deleteClienteInfo"></span>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                        <button type="button" class="btn btn-danger" id="confirmDeleteBtn">
+                            <i class="bi bi-trash"></i> Eliminar Cliente
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
 
         <!-- SCRIPTS -->
@@ -271,6 +356,7 @@
             let clientes = [];
             let clientesOriginal = [];
             let currentUserLogin = '';
+            let currentClienteId = null;
 
             // Inicialización al cargar la página
             $(document).ready(function () {
@@ -280,36 +366,31 @@
                 configurarEventos();
             });
 
-            // Verificar sesión activa - compatible con tu sistema de login
+            // Verificar sesión activa
             function verificarSesion() {
                 console.log("Verificando sesión...");
                 $.ajax({
                     url: "sessioninfoservlet",
                     type: "GET",
                     dataType: "json",
-                    timeout: 10000, // 10 segundos de timeout
+                    timeout: 10000,
                     success: function (data) {
                         console.log("Datos de sesión:", data);
                         if (data.error || !data.usuarioId) {
                             console.log("No hay sesión activa, redirigiendo...");
                             window.location.href = "index.html";
                         } else {
-                            // Usar los datos de tu sesión
                             $("#userName").text(data.usuarioNombre || data.nombUsua || "Usuario");
-                            currentUserLogin = data.usuarioLogin; // Guardar el login del usuario actual
+                            currentUserLogin = data.usuarioLogin;
 
-                            // Si tienes estos campos en sessioninfoservlet, úsalos; sino, oculta
-                            if (data.nombRol)
-                                $("#nombRol").text(data.nombRol);
-                            if (data.nombEmpr)
-                                $("#nombEmpr").text(data.nombEmpr);
+                            if (data.nombRol) $("#nombRol").text(data.nombRol);
+                            if (data.nombEmpr) $("#nombEmpr").text(data.nombEmpr);
 
                             console.log("Sesión válida para usuario:", data.usuarioNombre);
                         }
                     },
                     error: function (xhr, status, error) {
                         console.log("Error en verificación de sesión:", error);
-                        // Solo redirigir si es un error 401/403 o timeout
                         if (xhr.status === 401 || xhr.status === 403 || status === 'timeout') {
                             window.location.href = "index.html";
                         }
@@ -328,13 +409,9 @@
                             type: "POST",
                             dataType: "json",
                             success: function (response) {
-                                console.log("Logout response:", response);
-                                // Redirigir independientemente de la respuesta
                                 window.location.href = "index.html";
                             },
                             error: function (xhr, status, error) {
-                                console.log("Error en logout:", error);
-                                // Redirigir incluso si hay error
                                 window.location.href = "index.html";
                             }
                         });
@@ -353,11 +430,11 @@
                     let passUsua = $("#passUsua").val();
                     let newpass = $("#newpass").val();
 
-                    // Validaciones básicas
                     if (!logiUsua || !passUsua || !newpass) {
                         showAlert("Todos los campos son obligatorios", 'danger');
                         return;
-                    }                    // Encriptar contraseñas con MD5
+                    }
+
                     const passUsuaHash = CryptoJS.MD5(passUsua).toString();
                     const newpassHash = CryptoJS.MD5(newpass).toString();
 
@@ -384,41 +461,107 @@
                         }
                     });
                 });
+
+                // Formulario de cliente
+                $("#formCliente").submit(function (e) {
+                    e.preventDefault();
+                    saveCliente();
+                });
+
+                // Botón de confirmación de eliminación
+                $("#confirmDeleteBtn").click(function () {
+                    if (currentClienteId) {
+                        deleteClienteConfirmed(currentClienteId);
+                    }
+                });
+
+                // Validación en tiempo real del DNI
+                $("#ndniClie").on('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '').substring(0, 8);
+                });
+
+                // Validación en tiempo real del celular
+                $("#celuClie").on('input', function() {
+                    this.value = this.value.replace(/[^0-9]/g, '').substring(0, 9);
+                });
             }
 
-            // Mostrar alertas en pantalla
+            // Mostrar alertas
             function showAlert(message, type = 'info') {
                 const alertHTML = `
                     <div class="alert alert-${type} alert-dismissible fade show" role="alert">
-                        ${message}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                        <i class="bi bi-${getIconForAlert(type)} me-2"></i>${message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>`;
                 $("#alertContainer").html(alertHTML);
                 setTimeout(() => {
                     $(".alert").alert('close');
-                }, 4000);
+                }, 5000);
+            }
+
+            function getIconForAlert(type) {
+                const icons = {
+                    'success': 'check-circle',
+                    'danger': 'exclamation-triangle',
+                    'warning': 'exclamation-triangle',
+                    'info': 'info-circle'
+                };
+                return icons[type] || 'info-circle';
             }
 
             // Cargar clientes desde el backend
             function loadClientes() {
+                console.log("Cargando clientes...");
                 $("#loadingState").show();
-                $("#clientesTableBody").html(""); // limpiar tabla
+                $("#clientesTableBody").html(`
+                    <tr>
+                        <td colspan="6" class="text-center">
+                            <div class="spinner-border text-primary" role="status">
+                                <span class="visually-hidden">Cargando...</span>
+                            </div>
+                        </td>
+                    </tr>
+                `);
 
                 $.ajax({
                     url: "clienteservlet",
                     method: "GET",
                     dataType: "json",
+                    timeout: 15000,
                     success: function (data) {
-                        clientes = data;
-                        clientesOriginal = [...clientes]; // copia para filtrar
-                        renderClientes(data);
-                        $("#totalClientes").text(data.length);
+                        console.log("Clientes cargados:", data);
+                        clientes = data || [];
+                        clientesOriginal = [...clientes];
+                        renderClientes(clientes);
+                        $("#totalClientes").text(clientes.length);
                         $("#loadingState").hide();
+
+                        if (clientes.length > 0) {
+                            showAlert(`Se cargaron ${clientes.length} clientes correctamente`, 'success');
+                        }
                     },
                     error: function (xhr, status, error) {
-                        console.log("Error cargando clientes:", error);
-                        showAlert("Error al cargar clientes", "danger");
+                        console.error("Error cargando clientes:", error);
                         $("#loadingState").hide();
+
+                        let errorMessage = "Error al cargar clientes";
+                        if (xhr.responseJSON && xhr.responseJSON.mensaje) {
+                            errorMessage = xhr.responseJSON.mensaje;
+                        } else if (status === 'timeout') {
+                            errorMessage = "Tiempo de espera agotado. Verifique su conexión.";
+                        }
+
+                        showAlert(errorMessage, "danger");
+
+                        // Mostrar mensaje en la tabla
+                        $("#clientesTableBody").html(`
+                            <tr>
+                                <td colspan="6" class="text-center text-muted">
+                                    <i class="bi bi-exclamation-triangle fs-1"></i><br>
+                                    Error al cargar los datos
+                                </td>
+                            </tr>
+                        `);
                     }
                 });
             }
@@ -426,33 +569,243 @@
             // Renderizar tabla de clientes
             function renderClientes(lista) {
                 let html = "";
-                if (lista.length === 0) {
-                    html = `<tr><td colspan="5" class="text-center">No se encontraron resultados</td></tr>`;
+
+                if (!lista || lista.length === 0) {
+                    html = `
+                        <tr>
+                            <td colspan="6" class="text-center text-muted">
+                                <i class="bi bi-inbox fs-1"></i><br>
+                                No se encontraron clientes
+                            </td>
+                        </tr>`;
                 } else {
-                    lista.forEach(clientes => {
+                    lista.forEach(cliente => {
                         html += `
                             <tr>
-                                <td class="text-center">${clientes.codiClie}</td>
-                                <td class="text-center">${clientes.ndniClie}</td>
-                                <td>${clientes.nombClie}</td>
-                                <td>${clientes.celuClie}</td>
-                                <td>${clientes.direClie}</td>
+                                <td class="text-center"><strong>${cliente.codiClie || ''}</strong></td>
+                                <td class="text-center">
+                                    <span class="badge bg-secondary">${cliente.ndniClie || 'Sin DNI'}</span>
+                                </td>
+                                <td>
+                                    <strong>${cliente.nombClie || 'Sin nombre'}</strong>
+                                </td>
+                                <td class="text-center">
+                                    ${cliente.celuClie ? `<i class="bi bi-phone"></i> ${cliente.celuClie}` : '<span class="text-muted">Sin celular</span>'}
+                                </td>
+                                <td>
+                                    <small>${cliente.direClie || 'Sin dirección'}</small>
+                                </td>
+                                <td class="text-center">
+                                    <div class="btn-group" role="group">
+                                        <button class="btn btn-sm btn-outline-primary" 
+                                                onclick="editCliente(${cliente.codiClie})" 
+                                                title="Editar cliente">
+                                            <i class="bi bi-pencil"></i>
+                                        </button>
+                                        <button class="btn btn-sm btn-outline-danger" 
+                                                onclick="deleteCliente(${cliente.codiClie}, '${cliente.nombClie}')" 
+                                                title="Eliminar cliente">
+                                            <i class="bi bi-trash"></i>
+                                        </button>
+                                    </div>
+                                </td>
                             </tr>`;
                     });
                 }
+
                 $("#clientesTableBody").html(html);
             }
 
-            // Filtro de clientes por nombre, DNI o usuario
+            // Filtro de clientes
             function filterClientes() {
-                const term = $("#searchInput").val().toLowerCase();
-                const filtered = clientesOriginal.filter(c =>
-                    (c.dni && c.dni.toLowerCase().includes(term)) ||
-                    (c.nombres && c.nombres.toLowerCase().includes(term)) ||
-                    (c.usuario && c.usuario.toLowerCase().includes(term))
-                );
+                const term = $("#searchInput").val().toLowerCase().trim();
+
+                if (term === '') {
+                    renderClientes(clientesOriginal);
+                    $("#totalClientes").text(clientesOriginal.length);
+                    return;
+                }
+
+                const filtered = clientesOriginal.filter(cliente => {
+                    return (cliente.ndniClie && cliente.ndniClie.toLowerCase().includes(term)) ||
+                           (cliente.nombClie && cliente.nombClie.toLowerCase().includes(term)) ||
+                           (cliente.celuClie && cliente.celuClie.toLowerCase().includes(term)) ||
+                           (cliente.direClie && cliente.direClie.toLowerCase().includes(term));
+                });
+
                 renderClientes(filtered);
                 $("#totalClientes").text(filtered.length);
+            }
+
+            // Abrir modal para nuevo cliente
+            function openNewClienteModal() {
+                $("#clienteModalTitle").text("Nuevo Cliente");
+                $("#formCliente")[0].reset();
+                $("#clienteId").val("");
+                currentClienteId = null;
+                $("#btnSaveCliente").html('<i class="bi bi-save"></i> Crear Cliente');
+                $("#clienteModal").modal('show');
+            }
+
+            // Editar cliente
+            function editCliente(codiClie) {
+                const cliente = clientes.find(c => c.codiClie == codiClie);
+
+                if (!cliente) {
+                    showAlert("Cliente no encontrado", 'danger');
+                    return;
+                }
+
+                $("#clienteModalTitle").text("Editar Cliente");
+                $("#clienteId").val(cliente.codiClie);
+                $("#ndniClie").val(cliente.ndniClie || '');
+                $("#nombClie").val(cliente.nombClie || '');
+                $("#celuClie").val(cliente.celuClie || '');
+                $("#direClie").val(cliente.direClie || '');
+
+                currentClienteId = codiClie;
+                $("#btnSaveCliente").html('<i class="bi bi-save"></i> Actualizar Cliente');
+                $("#clienteModal").modal('show');
+            }
+
+            // Guardar cliente (crear o actualizar)
+            function saveCliente() {
+                // Validaciones del formulario
+                const ndniClie = $("#ndniClie").val().trim();
+                const nombClie = $("#nombClie").val().trim();
+                const celuClie = $("#celuClie").val().trim();
+                const direClie = $("#direClie").val().trim();
+
+                if (!ndniClie || ndniClie.length !== 8) {
+                    showAlert("El DNI debe tener exactamente 8 dígitos", 'danger');
+                    $("#ndniClie").focus();
+                    return;
+                }
+
+                if (!nombClie || nombClie.length < 2) {
+                    showAlert("El nombre debe tener al menos 2 caracteres", 'danger');
+                    $("#nombClie").focus();
+                    return;
+                }
+
+                if (celuClie && celuClie.length !== 9) {
+                    showAlert("El celular debe tener exactamente 9 dígitos o estar vacío", 'danger');
+                    $("#celuClie").focus();
+                    return;
+                }
+
+                const clienteData = {
+                    ndniClie: ndniClie,
+                    nombClie: nombClie,
+                    celuClie: celuClie,
+                    direClie: direClie
+                };
+
+                const isEdit = currentClienteId !== null;
+
+                if (isEdit) {
+                    clienteData.codiClie = currentClienteId;
+                } else {
+                    // Para crear, generar un ID temporal (el backend debería manejarlo)
+                    clienteData.codiClie = Date.now();
+                }
+
+                // Deshabilitar botón mientras se procesa
+                $("#btnSaveCliente").prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Guardando...'
+                );
+
+                $.ajax({
+                    url: "clienteservlet",
+                    method: isEdit ? "PUT" : "POST",
+                    contentType: "application/json",
+                    data: JSON.stringify(clienteData),
+                    dataType: "json",
+                    success: function (response) {
+                        console.log("Respuesta del servidor:", response);
+
+                        if (response.success) {
+                            showAlert(
+                                isEdit ? "Cliente actualizado correctamente" : "Cliente creado correctamente", 
+                                'success'
+                            );
+                            $("#clienteModal").modal('hide');
+                            loadClientes(); // Recargar la lista
+                        } else {
+                            showAlert(response.mensaje || "Error al procesar la solicitud", 'danger');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error guardando cliente:", error);
+
+                        let errorMessage = "Error al guardar el cliente";
+                        if (xhr.responseJSON && xhr.responseJSON.mensaje) {
+                            errorMessage = xhr.responseJSON.mensaje;
+                        } else if (xhr.status === 409) {
+                            errorMessage = "Ya existe un cliente con ese DNI";
+                        }
+
+                        showAlert(errorMessage, 'danger');
+                    },
+                    complete: function () {
+                        // Rehabilitar botón
+                        $("#btnSaveCliente").prop('disabled', false).html(
+                            '<i class="bi bi-save"></i> ' + (isEdit ? 'Actualizar Cliente' : 'Crear Cliente')
+                        );
+                    }
+                });
+            }
+
+            // Confirmar eliminación de cliente
+            function deleteCliente(codiClie, nombClie) {
+                currentClienteId = codiClie;
+                $("#deleteClienteInfo").html(`
+                    <strong>ID:</strong> ${codiClie}<br>
+                    <strong>Nombre:</strong> ${nombClie || 'Sin nombre'}
+                `);
+                $("#deleteModal").modal('show');
+            }
+
+            // Eliminar cliente confirmado
+            function deleteClienteConfirmed(codiClie) {
+                $("#confirmDeleteBtn").prop('disabled', true).html(
+                    '<span class="spinner-border spinner-border-sm me-2"></span>Eliminando...'
+                );
+
+                $.ajax({
+                    url: "clienteservlet?codiClie=" + codiClie,
+                    method: "DELETE",
+                    dataType: "json",
+                    success: function (response) {
+                        console.log("Respuesta eliminación:", response);
+
+                        if (response.success) {
+                            showAlert("Cliente eliminado correctamente", 'success');
+                            $("#deleteModal").modal('hide');
+                            loadClientes(); // Recargar la lista
+                        } else {
+                            showAlert(response.mensaje || "Error al eliminar el cliente", 'danger');
+                        }
+                    },
+                    error: function (xhr, status, error) {
+                        console.error("Error eliminando cliente:", error);
+
+                        let errorMessage = "Error al eliminar el cliente";
+                        if (xhr.responseJSON && xhr.responseJSON.mensaje) {
+                            errorMessage = xhr.responseJSON.mensaje;
+                        } else if (xhr.status === 404) {
+                            errorMessage = "El cliente no fue encontrado";
+                        }
+
+                        showAlert(errorMessage, 'danger');
+                    },
+                    complete: function () {
+                        $("#confirmDeleteBtn").prop('disabled', false).html(
+                            '<i class="bi bi-trash"></i> Eliminar Cliente'
+                        );
+                        currentClienteId = null;
+                    }
+                });
             }
         </script>
     </body>
