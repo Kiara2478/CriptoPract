@@ -442,25 +442,26 @@
                         return;
                     }
 
-                    const passUsuaHash = CryptoJS.MD5(passUsua).toString();
-                    const newpassHash = CryptoJS.MD5(newpass).toString();
+                    //const passUsuaHash = CryptoJS.MD5(passUsua).toString();
+                    //const newpassHash = CryptoJS.MD5(newpass).toString();
 
                     $.ajax({
                         url: "cambiarcontrasena",
                         type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify({
+                        data:{
                             logiUsua: logiUsua,
-                            passUsua: passUsuaHash,
-                            newpass: newpassHash
-                        }),
+                            passUsua: passUsua,
+                            newpass: newpass
+                        },
+                        dataType: "json",
                         success: function (response) {
-                            if (response.success) {
-                                showAlert("Contraseña cambiada correctamente", 'success');
-                                $('#cambiarClaveModal').modal('hide');
+                            if (response.resultado === "ok") {
+                                showAlert(response.mensaje, 'success');
+                                $("#cambiarClaveModal").modal('hide');
                                 $("#formCambiarClave")[0].reset();
+                                setTimeout(() => window.location.href = "index.html", 2000);
                             } else {
-                                showAlert(response.message || "No se pudo cambiar la contraseña", 'danger');
+                                showAlert(response.mensaje, 'danger');
                             }
                         },
                         error: function () {
@@ -656,7 +657,7 @@
 
             // Editar cliente
             function editCliente(codiClie) {
-                const cliente = clientes.find(c => c.codiClie == codiClie);
+                const cliente = clientes.find(c => c.codiClie === codiClie);
 
                 if (!cliente) {
                     showAlert("Cliente no encontrado", 'danger');
