@@ -1,0 +1,480 @@
+<!doctype html>
+<html lang="en">
+    <!--begin::Head-->
+    <head>
+        <!-- Meta tags para responsividad -->
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+        <title>AdminLTE 4 | Login Page</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <meta name="title" content="AdminLTE 4 | Login Page" />
+        <meta name="author" content="ColorlibHQ" />
+        <meta
+            name="description"
+            content="AdminLTE is a Free Bootstrap 5 Admin Dashboard, 30 example pages using Vanilla JS."
+            />
+        <meta
+            name="keywords"
+            content="bootstrap 5, bootstrap, bootstrap 5 admin dashboard, bootstrap 5 dashboard, bootstrap 5 charts, bootstrap 5 calendar, bootstrap 5 datepicker, bootstrap 5 tables, bootstrap 5 datatable, vanilla js datatable, colorlibhq, colorlibhq dashboard, colorlibhq admin dashboard"
+            />
+
+        <!-- Hojas de estilo -->
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/@fontsource/source-sans-3@5.0.12/index.css"
+            integrity="sha256-tXJfXfp6Ewt1ilPzLDtQnJV4hclT9XuaZUKyUvmyr+Q="
+            crossorigin="anonymous"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/styles/overlayscrollbars.min.css"
+            integrity="sha256-tZHrRjVqNSRyWg2wbppGnT833E/Ys0DHWGwT04GiqQg="
+            crossorigin="anonymous"
+            />
+        <link
+            rel="stylesheet"
+            href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css"
+            integrity="sha256-9kPW/n5nn53j4WMRYAxe9c1rCY96Oogo/MKSVdKzPmI="
+            crossorigin="anonymous"
+            />
+
+        <!-- CSS DE ADMIN LTE -->
+        <link href="css/adminlte.css" rel="stylesheet" type="text/css"/>
+
+
+        <!-- Scripts externos GOOGLE - MD5-->
+        <script src="https://accounts.google.com/gsi/client" async defer></script>
+        <script src="https://cdnjs.cloudflare.com/ajax/libs/crypto-js/4.1.1/crypto-js.min.js"></script>
+    </head>
+    
+    <!--begin::Body-->
+    <body class="login-page bg-body-secondary">
+        <div class="login-box">
+
+            <!-- ACCION DE LOGO-->
+            <div class="login-logo">
+                <a href="index.html"><b>Bienvenid@</b>👤</a>
+            </div>
+
+            <div class="card">
+                <div class="card-body login-card-body">
+                    <p class="login-box-msg">Registrese para iniciar session</p>
+
+                    <!-- MENSAJE DE ALERTA -->
+                    <div id="alertMessage" class="alert alert-danger" style="display: none;"></div>
+
+                    <!-- FORMULARIO -->
+                    <form id="loginForm">
+
+                        <!-- USUARIO -->
+                        <div class="input-group mb-3">
+                            <input type="text" id="usuario" name="usuario" class="form-control" placeholder="Usuario" required autocomplete="username" />
+                            <div class="input-group-text"><span class="bi bi-person"></span></div>
+                        </div>
+
+                        <!-- CLAVE -->
+                        <div class="input-group mb-3">
+                            <input type="password" id="clave" name="clave" class="form-control" placeholder="Contraseña" required autocomplete="current-password" />
+                            <div class="input-group-text"><span class="bi bi-lock-fill"></span></div>
+                        </div>
+
+                        <div class="row">
+                            <!-- BOTON DE RECORDATORIO-->
+                            <!-- <div class="col-8">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault" />
+                                    <label class="form-check-label" for="flexCheckDefault"> Remember Me </label>
+                                </div>
+                            </div>-->
+
+                            <div class="col-12 text-center">
+                                <div class="d-grid gap-2">
+                                    <!-- BOTON DE REGISTRO-->
+                                    <button type="submit" class="btn btn-danger" id="btnLogin">
+                                        <span id="loadingSpinner" class="spinner-border spinner-border-sm me-2" style="display: none;"></span>
+                                        Iniciar Session
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </form>
+
+                    <div class="social-auth-links text-center mb-3 d-grid gap-2">
+                        <p>- OR -</p>
+                        <!-- BOTON DE REGISTO CON GOOGLE - ID CLIENTE GENERADO-->
+                        <!-- Inicialización -->
+                        <div id="g_id_onload"
+                             data-client_id="683576227359-a17m87huqbg468fu1tlknkcnru125fl6.apps.googleusercontent.com"
+                             data-callback="handleCredentialResponse">
+                        </div>
+
+                        <!-- Botón oficial de Google -->
+                        <div class="g_id_signin" data-type="standard" data-shape="rectangular"
+                             data-theme="filled_black" data-text="signin_with" data-size="large"
+                             data-logo_alignment="left">
+                        </div>
+                    </div>
+
+                    <!-- REGISTRO DE NUEVO MIEMBROS -->
+                    <p class="mb-0 text-center">
+                        <a href="register.html" class="text-center">Es nuevo? Registrese Aqui!</a>
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- SCRIPT -->
+        <script
+            src="https://cdn.jsdelivr.net/npm/overlayscrollbars@2.10.1/browser/overlayscrollbars.browser.es6.min.js"
+            integrity="sha256-dghWARbRe2eLlIJ56wNB+b760ywulqK3DzZYEpsg2fQ="
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.8/dist/umd/popper.min.js"
+            integrity="sha384-I7E8VVD/ismYTF4hNIPjVp/Zjvgyol6VFvRkX/vR+Vc4jQkC+hVqc2pM8ODewa9r"
+            crossorigin="anonymous"
+        ></script>
+        <script
+            src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.min.js"
+            integrity="sha384-0pUGZvbkm6XF6gxjEnlmuGrJXVbNuzT9qBBavbLwCsOGabYfZo0T0to5eqruptLy"
+            crossorigin="anonymous"
+        ></script>
+
+        <!-- JS DE ADMIN LTE -->
+        <script src="js/adminlte.js" type="text/javascript"></script>
+
+        <script>
+            // Log debug
+            function log(msg, data = '') {
+                if (true)
+                    console.log(`[LOGIN] ${msg}`, data);
+            }
+
+            // Mostrar alertas
+            function alert(text, type = 'error') {
+                const el = document.getElementById('alertMessage');
+                if (!el)
+                    return;
+
+                el.className = `alert alert-${type === 'error' ? 'danger' : type}`;
+                el.textContent = text;
+                el.style.display = 'block';
+
+                // Auto-ocultar 4s
+                setTimeout(() => el.style.display = 'none', 4000);
+            }
+
+            // Cifrado MD5
+            function md5(text) {
+                if (!text)
+                    throw new Error('Texto vacío');
+                return CryptoJS.MD5(text).toString().toLowerCase();
+            }
+
+            // Control boton carga
+            function loading(show) {
+                const btn = document.getElementById('btnLogin');
+                const spin = document.getElementById('loadingSpinner');
+
+                if (!btn)
+                    return;
+
+                btn.disabled = show;
+                if (spin)
+                    spin.style.display = show ? 'inline-block' : 'none';
+
+                // Cambiar texto
+                const txt = btn.querySelector('span:not(#loadingSpinner)') || btn;
+                txt.textContent = show ? 'Validando...' : 'Iniciar Session';
+            }
+
+            // ===== VALIDACION =====
+            function validate(user, pass) {
+                const err = [];
+
+                if (!user?.trim())
+                    err.push('Usuario requerido');
+                if (!pass)
+                    err.push('Contraseña requerida');
+                if (user?.trim().length < 3)
+                    err.push('Usuario muy corto (mín. 3)');
+                if (pass?.length < 4)
+                    err.push('Contraseña muy corta (mín. 4)');
+
+                if (user && /[<>"'&]/.test(user)) {
+                    err.push('Usuario con caracteres inválidos');
+                }
+
+                return {
+                    ok: err.length === 0,
+                    msg: err.join('. ')
+                };
+            }
+
+            // ===== SESSION =====
+            //LIMPIAR SESSION
+            function clearSession() {
+                sessionStorage.removeItem('authToken');
+                sessionStorage.removeItem('userName');
+                sessionStorage.removeItem('userId');
+                sessionStorage.removeItem('loginTime');
+
+                // Limpiar cookies session
+                document.cookie.split(";").forEach(cookie => {
+                    const eq = cookie.indexOf("=");
+                    const name = eq > -1 ? cookie.substr(0, eq).trim() : cookie.trim();
+                    if (name.includes('session') || name.includes('auth')) {
+                        document.cookie = `${name}=;expires=Thu, 01 Jan 1970 00:00:00 GMT;path=/`;
+                    }
+                });
+
+                log('Session limpiada');
+            }
+
+            // GUARDA SESSION
+            function saveSession(data) {
+                const time = Date.now();
+
+                if (data.token)
+                    sessionStorage.setItem('authToken', data.token);
+                if (data.usuario)
+                    sessionStorage.setItem('userName', data.usuario);
+                if (data.usuarioId)
+                    sessionStorage.setItem('userId', data.usuarioId);
+
+                sessionStorage.setItem('loginTime', time.toString());
+                log('Session guardada', {user: data.usuario, time});
+            }
+
+            // VERIFICA VALIDACION
+            function hasSession() {
+                const token = sessionStorage.getItem('authToken');
+                const user = sessionStorage.getItem('userName');
+                const time = sessionStorage.getItem('loginTime');
+
+                if (!token || !user || !time)
+                    return false;
+
+                // Verificar max 24h
+                const age = Date.now() - parseInt(time);
+                const maxAge = 24 * 60 * 60 * 1000;
+
+                if (age > maxAge) {
+                    log('Session expirada');
+                    clearSession();
+                    return false;
+                }
+
+                return true;
+            }
+
+            // ===== ERRORES =====
+            function getError(res, err) {
+                if (!navigator.onLine)
+                    return 'Sin internet';
+                if (err?.name === 'TypeError')
+                    return 'Error conexión servidor';
+
+                if (res) {
+                    switch (res.status) {
+                        case 400:
+                            return 'Datos inválidos';
+                        case 401:
+                            return 'Usuario/contraseña incorrectos';
+                        case 403:
+                            return 'Acceso denegado';
+                        case 404:
+                            return 'Servicio no encontrado';
+                        case 500:
+                            return 'Error servidor';
+                        default:
+                            return `Error servidor (${res.status})`;
+                    }
+                }
+
+                return err?.message || 'Error desconocido';
+            }
+
+            // ===== LOGIN TRADICIONAL =====
+            async function doLogin(user, pass) {
+                loading(true);
+
+                try {
+                    // Cifrar pass
+                    const hashPass = md5(pass);
+                    log('Pass cifrada', {len: hashPass.length});
+
+                    // Enviar al servidor
+                    const res = await fetch('login', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            usuario: user,
+                            clave: hashPass
+                        })
+                    });
+
+                    const result = await res.json();
+                    log('Respuesta servidor', {status: res.status, ok: res.ok});
+
+                    if (res.ok && result.status === 'ok') {
+                        return success(result);
+                    } else {
+                        throw new Error(result.message || getError(res));
+                    }
+
+                } catch (error) {
+                    log('Error login', error);
+                    alert(getError(null, error));
+                } finally {
+                    loading(false);
+                }
+            }
+
+            // ===== LOGIN GOOGLE =====
+            async function doGoogleLogin(response) {
+                if (!response.credential) {
+                    alert('Error credenciales Google');
+                    return;
+                }
+
+                alert('Procesando Google...', 'info');
+
+                try {
+                    const res = await fetch('logingoogle', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json'
+                        },
+                        body: JSON.stringify({
+                            id_token: response.credential
+                        })
+                    });
+
+                    const result = await res.json();
+
+                    if (res.ok && (result.resultado === 'ok' || result.status === 'ok')) {
+                        return success({...result, status: 'ok'});
+                    } else {
+                        throw new Error(result.message || 'Error Google login');
+                    }
+
+                } catch (error) {
+                    log('Error Google', error);
+                    alert('Error conexión Google');
+                }
+            }
+
+            // ===== LOGIN EXITOSO =====
+            function success(data) {
+                log('Login OK', data);
+
+                clearSession();
+                saveSession(data);
+
+                alert('Login exitoso. Redirigiendo...', 'success');
+
+                setTimeout(() => {
+                    const url = data.redirect || 'principal.html';
+                    log('Redirigiendo:', url);
+                    window.location.replace(url); // Elimina del historial
+                }, 1500);
+            }
+
+            // ===== INIT =====
+            document.addEventListener('DOMContentLoaded', function () {
+                log('Init login');
+
+                clearSession(); // Limpiar al iniciar
+
+                // Config formulario
+                const form = document.getElementById('loginForm');
+                if (form) {
+                    form.addEventListener('submit', async function (e) {
+                        e.preventDefault();
+
+                        const user = document.getElementById('usuario').value.trim();
+                        const pass = document.getElementById('clave').value;
+
+                        // Validar
+                        const check = validate(user, pass);
+                        if (!check.ok) {
+                            alert(check.msg);
+                            return;
+                        }
+
+                        await doLogin(user, pass);
+                    });
+                }
+
+                // Enter navigation
+                const userField = document.getElementById('usuario');
+                const passField = document.getElementById('clave');
+
+                if (userField) {
+                    userField.focus();
+                    userField.addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter' && passField)
+                            passField.focus();
+                    });
+                }
+
+                if (passField) {
+                    passField.addEventListener('keypress', function (e) {
+                        if (e.key === 'Enter' && form) {
+                            form.dispatchEvent(new Event('submit'));
+                        }
+                    });
+                }
+
+                log('Init OK');
+            });
+
+            // Callback global Google
+            window.handleCredentialResponse = doGoogleLogin;
+
+            // ===== NAVEGACION =====
+            // Detectar vuelta con boton atras
+            window.addEventListener('pageshow', function (event) {
+                if (event.persisted) {
+                    log('Vuelta desde cache');
+                    clearSession();
+                    alert('Sesión invalidada. Inicie nuevamente.', 'warning');
+                    return;
+                }
+
+                // Si hay session activa en login = invalida
+                if (hasSession()) {
+                    log('Session detectada en login');
+                    clearSession();
+                    alert('Debe iniciar sesión nuevamente.', 'info');
+                }
+            });
+
+            // Limpiar al salir
+            window.addEventListener('beforeunload', function () {
+                log('Saliendo login');
+                clearSession();
+            });
+
+            // ===== ERRORES GLOBALES =====
+            window.addEventListener('error', function (event) {
+                console.error('Error global:', event.error);
+                if (DEBUG)
+                    alert('Error aplicación', 'warning');
+            });
+
+            window.addEventListener('unhandledrejection', function (event) {
+                console.error('Promise error:', event.reason);
+                if (DEBUG)
+                    alert('Error conexión', 'warning');
+            });
+
+            log('Login script cargado');
+        </script>
+    </body>
+</html>
